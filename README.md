@@ -1,3 +1,9 @@
+## Information on the `gallery.zip` archive
+
+The `gallery.zip` file was generated using the `nst_gallery` colab notebook and contains all of the 90 stylized images that compose the gallery.
+
+It will be accessed and used by the `nst_gallery_curation` colab notebook to produce the curation document. 
+
 ## Image References
 
 | File Name | Reference |
