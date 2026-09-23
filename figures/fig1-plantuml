@@ -1,0 +1,135 @@
+@startuml
+
+top to bottom direction
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment center
+skinparam ArrowThickness 1.2
+skinparam linetype ortho
+
+' ============================================================
+' INPUT DATA
+' ============================================================
+
+package "Input Dataset" {
+
+    folder "Content Images\n10 images" as Content
+
+    folder "Style Images\n9 images" as Style
+
+    database "Image Metadata\nTitle\nAuthor\nYear\nSource URL" as Metadata
+}
+
+' ============================================================
+' GALLERY GENERATION
+' ============================================================
+
+package "Gallery Generation" {
+
+    component "nst_gallery.ipynb" as GalleryNotebook
+
+    component "Pre-processing" as Preprocess
+
+    component "TensorFlow Hub\nMagenta Arbitrary Style\nTransfer Model" as Model
+
+    component "Post-processing" as Postprocess
+
+    component "Target Inversion" as Inversion
+
+    component "Metamorphosis\nSpectrum" as Spectrum
+
+    component "Gallery Page\nGeneration" as GalleryPage
+}
+
+' ============================================================
+' PRIMARY GALLERY ARTIFACTS
+' ============================================================
+
+package "Gallery Artifacts" {
+
+    artifact "nst_gallery.pdf\n90-page Digital Gallery" as GalleryPDF
+
+    artifact "gallery.zip\n90 Stylized Images" as GalleryZIP
+}
+
+' ============================================================
+' CURATION
+' ============================================================
+
+package "Gallery Curation" {
+
+    component "nst_gallery_curation.ipynb" as CurationNotebook
+
+    component "Randomized Image\nPresentation" as Randomizer
+
+    component "Structured Boolean\nEvaluation Rubric\n11 Criteria" as Rubric
+
+    component "Curation Record\nStorage" as Records
+}
+
+' ============================================================
+' CURATION ARTIFACTS
+' ============================================================
+
+package "Curation Artifacts" {
+
+    artifact "nst_gallery_curation.pdf\n90-page Curation Document" as CurationPDF
+
+    artifact "nst_gallery_curation.csv\n990 Boolean Judgements" as CurationCSV
+}
+
+' ============================================================
+' OPTIONAL ANALYSIS
+' ============================================================
+
+package "Auxiliary Analysis" {
+
+    component "nst_curation_analysis.ipynb" as Analysis
+
+    artifact "Descriptive Statistics\nTables and Visualizations" as Results
+}
+
+' ============================================================
+' DATA FLOW
+' ============================================================
+
+Content --> GalleryNotebook
+Style --> GalleryNotebook
+Metadata --> GalleryNotebook
+
+GalleryNotebook --> Preprocess
+Preprocess --> Model
+
+Model --> Postprocess
+Model --> Inversion
+
+Postprocess --> Spectrum
+Postprocess --> GalleryPage
+Inversion --> GalleryPage
+Spectrum --> GalleryPage
+Metadata --> GalleryPage
+
+GalleryPage --> GalleryPDF
+Postprocess --> GalleryZIP
+
+GalleryZIP --> CurationNotebook
+CurationNotebook --> Randomizer
+Randomizer --> Rubric
+Rubric --> Records
+
+Records --> CurationPDF
+Records --> CurationCSV
+
+CurationCSV --> Analysis
+Analysis --> Results
+
+note bottom of Analysis
+Auxiliary analysis is not required
+for generation or curation of
+the three primary project artifacts.
+end note
+
+@enduml
